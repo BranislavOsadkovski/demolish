@@ -2,6 +2,8 @@ package com.destruction.myDemolish;
 
 import com.destruction.myDemolish.domain.AppUser;
 import com.destruction.myDemolish.domain.Role;
+import com.destruction.myDemolish.domainOne.ApplicationUserPermission;
+import com.destruction.myDemolish.domainOne.ApplicationUserRole;
 import com.destruction.myDemolish.services.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,7 +20,9 @@ import java.util.ArrayList;
 public class MyDemolishApplication {
 
     public static void main(String[] args) {
-
+        System.out.println(ApplicationUserRole.ADMIN.getGrantedAuthorities());
+        System.out.println(ApplicationUserPermission.COURSE_WRITE.getPermission());
+        System.out.println(ApplicationUserPermission.COURSE_WRITE.name());
         SpringApplication.run(MyDemolishApplication.class, args);
     }
 
@@ -32,7 +36,6 @@ public class MyDemolishApplication {
 //    PasswordEncoder passwordEncoder() {
 //        return new BCryptPasswordEncoder();
 //    }
-
     @Bean
     CommandLineRunner run(UserService userService) {
         return args -> {

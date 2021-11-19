@@ -5,6 +5,7 @@ import com.destruction.myDemolish.mysql.repos.BookRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
@@ -23,6 +24,7 @@ public class BookController {
     }
 
     @GetMapping("/page/{page}")
+    @PreAuthorize("hasAnyAuthority('course:read','student:read')")
     public Page<Book> getPage(@PathVariable("page") String page) {
 
         Pageable pageable = PageRequest.of(Integer.valueOf(page), 10);
@@ -31,20 +33,25 @@ public class BookController {
 
     }
 
+    // hasRole('role')      hasAnyRole('role','role')
+    // hasAuthority('authority')    hasAnyAuthority('authority','authority')
 
-    @PostMapping("/book")
-    public Book getBookRecord(@RequestBody Book book) {
+    @PostMapping("/create")
+    @PreAuthorize("hasAuthority('course:write')")
+    public Book saveBookRecord(@RequestBody Book book) {
         Book b = bookRepository.save(book);
         return b;
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_STUDENT')")
     public List<Book> getAllBookRecords() {
 
         return (List<Book>) bookRepository.findAll();
     }
 
     @GetMapping("/generate")
+    @PreAuthorize("hasAuthority('course:write')")
     public void generateBooks() {
 
         generateRandomDbData();
