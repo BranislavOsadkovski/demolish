@@ -64,6 +64,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          * First configuration
          */
         http
+                /**
+                 * Any Cross-Site Scripting (XSS) can be used to defeat all CSRF mitigation techniques!
+                 *
+                 * https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+                 */
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/index", "/css/*", "/js/*").permitAll()
