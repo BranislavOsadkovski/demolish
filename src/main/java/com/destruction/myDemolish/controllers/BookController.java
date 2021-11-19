@@ -5,10 +5,8 @@ import com.destruction.myDemolish.mysql.repos.BookRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
@@ -34,9 +32,9 @@ public class BookController {
     }
 
 
-    @GetMapping("/book")
-    public Book getBookRecord() {
-        Book b = bookRepository.save(new Book(null, "Hanna's little puppy", Calendar.getInstance(), "Isabela Kit"));
+    @PostMapping("/book")
+    public Book getBookRecord(@RequestBody Book book) {
+        Book b = bookRepository.save(book);
         return b;
     }
 
@@ -44,6 +42,12 @@ public class BookController {
     public List<Book> getAllBookRecords() {
 
         return (List<Book>) bookRepository.findAll();
+    }
+
+    @GetMapping("/generate")
+    public void generateBooks() {
+
+        generateRandomDbData();
     }
 
     public void generateRandomDbData() {

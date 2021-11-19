@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserService implements UserDetailsService {
+public class UserService  { //implements UserDetailsService
 
     private final AppUserRepository appUserRepository;
     private final RoleRepository roleRepository;
@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService {
         return appUserRepository.findAll();
     }
 
-    @Override
+//    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser appUser = appUserRepository.findByUsername(username);
         if (appUser == null) {
