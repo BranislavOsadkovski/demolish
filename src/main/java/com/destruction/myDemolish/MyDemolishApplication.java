@@ -20,9 +20,7 @@ import java.util.ArrayList;
 public class MyDemolishApplication {
 
     public static void main(String[] args) {
-        System.out.println(ApplicationUserRole.ADMIN.getGrantedAuthorities());
-        System.out.println(ApplicationUserPermission.COURSE_WRITE.getPermission());
-        System.out.println(ApplicationUserPermission.COURSE_WRITE.name());
+
         SpringApplication.run(MyDemolishApplication.class, args);
     }
 
