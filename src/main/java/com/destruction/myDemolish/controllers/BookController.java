@@ -5,8 +5,11 @@ import com.destruction.myDemolish.mysql.repos.BookRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.function.EntityResponse;
 
 import java.util.Calendar;
 import java.util.List;
@@ -52,9 +55,9 @@ public class BookController {
 
     @GetMapping("/generate")
     @PreAuthorize("hasAuthority('course:write')")
-    public void generateBooks() {
-
+    public ResponseEntity generateBooks() {
         generateRandomDbData();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     public void generateRandomDbData() {

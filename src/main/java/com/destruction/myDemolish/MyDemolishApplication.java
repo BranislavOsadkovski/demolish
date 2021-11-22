@@ -1,20 +1,10 @@
 package com.destruction.myDemolish;
 
-import com.destruction.myDemolish.domain.AppUser;
-import com.destruction.myDemolish.domain.Role;
-import com.destruction.myDemolish.domainOne.ApplicationUserPermission;
-import com.destruction.myDemolish.domainOne.ApplicationUserRole;
 import com.destruction.myDemolish.services.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 public class MyDemolishApplication {

@@ -3,11 +3,13 @@ package com.destruction.myDemolish.config;
 import com.destruction.myDemolish.domainOne.ApplicationUserPermission;
 import com.destruction.myDemolish.domainOne.ApplicationUserRole;
 import com.destruction.myDemolish.security.JwtAuthenticationFilter;
+import com.destruction.myDemolish.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,8 +34,8 @@ import static com.destruction.myDemolish.domainOne.ApplicationUserRole.STUDENT;
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-//    private final UserDetailsService userDetailsService;
+    private final EncoderUtil encoderUtil;
+    private final UserService userService;
     //    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 //    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -54,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .and()
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/user/create").permitAll()
                 .antMatchers("/index", "/css/*", "/js/*").permitAll()
                 .antMatchers("/api/**").hasRole(ADMIN.name())
                 .anyRequest()
@@ -66,17 +69,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .usernameParameter("username")
                 .and()
                 .rememberMe()
-                    .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
-                    .key("verysecurekey")
+                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+                .key("verysecurekey")
 //                .rememberMeParameter("remember-me")
                 .and()
                 .logout()
-                    .logoutUrl("/logout")
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout-url","GET"))//should be using POST if csrf disabled - check doc's
-                    .clearAuthentication(true)
-                    .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID", "remember-me")
-                    .logoutSuccessUrl("/login");
+                .logoutUrl("/logout")
+                //should be using POST if csrf disabled - check doc's
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout-url", "GET"))
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
+                .logoutSuccessUrl("/login");
 
 
         /**
@@ -90,42 +94,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .permitAll()
 //                .anyRequest().authenticated() //authenticating!
 //                .and();
-        //my part with JWTFilter
+//        my part with JWTFilter
 //                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(encoderUtil.passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userService);
+        return daoAuthenticationProvider;
+    }
+
+
     @Override
-    @Bean
-    protected UserDetailsService userDetailsService() {
-
-        UserDetails user1 = User.builder()
-                .username("user1")
-                .password(passwordEncoder().encode("password"))
-//                .roles(ADMIN.name())
-                .authorities(ADMIN.getGrantedAuthorities())
-                .build();
-
-        UserDetails user2 = User.builder()
-                .username("user2")
-                .password(passwordEncoder().encode("password"))
-//                .roles(STUDENT.name()) //ROLE_STUDENT
-                .authorities(STUDENT.getGrantedAuthorities())
-                .build();
-
-        return new InMemoryUserDetailsManager(user1, user2);
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(daoAuthenticationProvider());
+//        auth.userDetailsService(userService).passwordEncoder(encoderUtil.passwordEncoder());
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-//    }
-
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
