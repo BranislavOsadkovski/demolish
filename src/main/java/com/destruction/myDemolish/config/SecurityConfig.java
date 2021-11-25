@@ -23,8 +23,6 @@ import static com.destruction.myDemolish.domainOne.ApplicationUserRole.ADMIN;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final EncoderUtil encoderUtil;
     private final UserService userService;
-    //    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -37,28 +35,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
          //         https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
          */
         http
-                //                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                //                .and()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/user/create").permitAll()
-                .antMatchers("/index", "/css/*", "/js/*").permitAll()
-                .antMatchers("/api/**").hasRole(ADMIN.name())
-                .anyRequest()
-                .authenticated()
-                .and()
-                .formLogin()
+            .csrf().disable()
+            //.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            //.and()
+            .authorizeRequests()
+            .antMatchers("/user/create").permitAll()
+            .antMatchers("/index", "/css/*", "/js/*").permitAll()
+            .antMatchers("/api/**").hasRole(ADMIN.name())
+            .anyRequest()
+            .authenticated()
+            .and()
+            .formLogin()
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/book/all", true)
-                //                .passwordParameter("password")
-                //                .usernameParameter("username")
-                .and()
-                .rememberMe()
+                //.passwordParameter("password")
+                //.usernameParameter("username")
+            .and()
+            .rememberMe()
                 .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
                 .key("verysecurekey")
-                //                .rememberMeParameter("remember-me")
-                .and()
-                .logout()
+                //.rememberMeParameter("remember-me")
+            .and()
+            .logout()
                 .logoutUrl("/logout")
                 //should be using POST if csrf disabled - check doc's
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout-url", "GET"))
@@ -66,21 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID", "remember-me")
                 .logoutSuccessUrl("/login");
-
-
-        /**
-         *
-         * Second configuration
-         */
-//        http.
-//        cors().and().csrf().disable()  //cors & csrf
-//                .authorizeRequests()
-//                .anyRequest()
-//                .permitAll()
-//                .anyRequest().authenticated() //authenticating!
-//                .and();
-//        my part with JWTFilter
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 
