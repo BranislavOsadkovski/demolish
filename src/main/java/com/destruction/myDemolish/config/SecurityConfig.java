@@ -1,33 +1,20 @@
 package com.destruction.myDemolish.config;
 
-import com.destruction.myDemolish.domainOne.ApplicationUserPermission;
-import com.destruction.myDemolish.domainOne.ApplicationUserRole;
-import com.destruction.myDemolish.security.JwtAuthenticationFilter;
 import com.destruction.myDemolish.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.concurrent.TimeUnit;
 
 import static com.destruction.myDemolish.domainOne.ApplicationUserRole.ADMIN;
-import static com.destruction.myDemolish.domainOne.ApplicationUserRole.STUDENT;
 
 @Configuration
 @EnableWebSecurity
@@ -41,19 +28,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         /**
          * First configuration
-         *             .antMatchers(HttpMethod.POST, "/book/**").hasAuthority(COURSE_WRITE.getPermission())
-         *              .antMatchers("/book/**").hasAnyRole(STUDENT.name(), ADMIN.name())
+         * REGULAR CONFIGURATION REFERENCE
          *
-         */
-
-        /** Any Cross-Site Scripting (XSS) can be used to defeat all CSRF mitigation techniques!
-         * https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+         //         Any Cross-Site Scripting (XSS) can be used to defeat all CSRF mitigation techniques!
+         //         https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
          */
         http
-//                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//                .and()
+                //                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                //                .and()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/user/create").permitAll()
@@ -65,13 +50,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login").permitAll()
                 .defaultSuccessUrl("/book/all", true)
-//                .passwordParameter("password")
-//                .usernameParameter("username")
+                //                .passwordParameter("password")
+                //                .usernameParameter("username")
                 .and()
                 .rememberMe()
                 .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
                 .key("verysecurekey")
-//                .rememberMeParameter("remember-me")
+                //                .rememberMeParameter("remember-me")
                 .and()
                 .logout()
                 .logoutUrl("/logout")
@@ -114,8 +99,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        auth.userDetailsService(userService).passwordEncoder(encoderUtil.passwordEncoder());
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
+
 }
