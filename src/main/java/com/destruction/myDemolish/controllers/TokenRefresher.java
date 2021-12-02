@@ -41,7 +41,7 @@ public class TokenRefresher {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
 
         if (authorizationHeader.startsWith("Bearer ") && authorizationHeader != null) {
-//            try {
+            try {
 
                 String token = authorizationHeader.substring("Bearer ".length());
                 Algorithm algorithm = Algorithm.HMAC256("There_is_never enough secrets!".getBytes());
@@ -50,15 +50,15 @@ public class TokenRefresher {
                 String username = decodedJWT.getSubject();
 
                 UserAccount userAccount = (UserAccount) userService.loadUserByUsername(username);
-                log.info("USER ACCOUNT "+ userAccount.toString());
+                log.info("USER ACCOUNT " + userAccount.toString());
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(userAccount.getUsername(), userAccount.getPassword(),userAccount.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(userAccount.getUsername(), userAccount.getPassword(), userAccount.getAuthorities());
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
                 String access_token = JWT.create()
                         .withSubject(userAccount.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 6 * 1000))
+                        .withExpiresAt(new Date(System.currentTimeMillis() + 60* 1000))
                         .withIssuer(request.getRequestURL().toString())
                         .withClaim("roles", userAccount.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                         .sign(algorithm);
@@ -75,17 +75,17 @@ public class TokenRefresher {
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
-//            } catch (Exception e) {
-//
-//                log.error("Error logging in {}", e.getMessage());
-//                response.setHeader("error", e.getMessage());
-//                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//
-//                Map<String, String> tokens = new HashMap<>();
-//                tokens.put("error", e.getMessage());
-//                response.setContentType(APPLICATION_JSON_VALUE);
-//                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-//            }
+            } catch (Exception e) {
+
+                log.error("Error logging in {}", e.getMessage());
+                response.setHeader("error", e.getMessage());
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
+                Map<String, String> tokens = new HashMap<>();
+                tokens.put("error", e.getMessage());
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+            }
 
         }
     }

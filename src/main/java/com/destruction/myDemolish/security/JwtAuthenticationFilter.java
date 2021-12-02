@@ -54,7 +54,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Algorithm algorithm = Algorithm.HMAC256("There_is_never enough secrets!".getBytes());
         String access_token = JWT.create()
                 .withSubject(userAccount.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 6000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 60* 1000))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", userAccount.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);

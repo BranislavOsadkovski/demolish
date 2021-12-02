@@ -1,5 +1,6 @@
 package com.destruction.myDemolish.config;
 
+import com.destruction.myDemolish.security.Adebe;
 import com.destruction.myDemolish.security.JwtAuthenticationFilter;
 import com.destruction.myDemolish.security.JwtAuthorizationFilter;
 import com.destruction.myDemolish.services.UserService;
@@ -15,9 +16,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.header.HeaderWriterFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.Filter;
 import java.util.concurrent.TimeUnit;
 
 import static com.destruction.myDemolish.domainOne.ApplicationUserRole.ADMIN;
@@ -74,6 +78,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/login");
         http.addFilter(new JwtAuthenticationFilter(authenticationManagerBean()));
         http.addFilterBefore(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        // Spring Security FILTER ORDER matters!
+        //HeaderWriterFilter comes before UsernamePasswordAuthenticationFilter
+        http.addFilterBefore(new Adebe(), HeaderWriterFilter.class);
+
     }
 
     @Bean
