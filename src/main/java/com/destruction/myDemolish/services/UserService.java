@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserService implements UserDetailsService { //implements UserDetailsService
+public class UserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
     private final EncoderUtil encoderUtil;

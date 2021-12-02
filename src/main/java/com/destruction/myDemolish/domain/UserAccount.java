@@ -35,7 +35,7 @@ public class UserAccount implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public List<? extends GrantedAuthority> getAuthorities() {
         return grantedAuthorities;
     }
 
@@ -67,5 +67,18 @@ public class UserAccount implements UserDetails {
     @Override
     public boolean isEnabled() {
         return isEnabled;
+    }
+
+    @Override
+    public String toString() {
+        return "UserAccount{" +
+                "grantedAuthorities=" + grantedAuthorities +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", isAccountNonExpired=" + isAccountNonExpired +
+                ", isAccountNonLocked=" + isAccountNonLocked +
+                ", isCredentialsNonExpired=" + isCredentialsNonExpired +
+                ", isEnabled=" + isEnabled +
+                '}';
     }
 }
