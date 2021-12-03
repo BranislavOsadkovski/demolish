@@ -81,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Spring Security FILTER ORDER matters!
         //HeaderWriterFilter comes before UsernamePasswordAuthenticationFilter
-        http.addFilterBefore(new Adebe(), HeaderWriterFilter.class);
+//        http.addFilterBefore(new Adebe(), HeaderWriterFilter.class);
 
     }
 
